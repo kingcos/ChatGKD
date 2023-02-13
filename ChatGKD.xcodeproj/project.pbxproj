@@ -13,6 +13,9 @@
 		843F60AB299A84910079886F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 843F60AA299A84910079886F /* Preview Assets.xcassets */; };
 		843F60AD299A84910079886F /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F60AC299A84910079886F /* Persistence.swift */; };
 		843F60B0299A84910079886F /* ChatGKD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 843F60AE299A84910079886F /* ChatGKD.xcdatamodeld */; };
+		843F60B7299A85AD0079886F /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F60B6299A85AD0079886F /* MainView.swift */; };
+		843F60B9299A86720079886F /* ChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F60B8299A86720079886F /* ChatListView.swift */; };
+		843F60BB299A86C40079886F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F60BA299A86C40079886F /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +26,9 @@
 		843F60AA299A84910079886F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		843F60AC299A84910079886F /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		843F60AF299A84910079886F /* ChatGKD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChatGKD.xcdatamodel; sourceTree = "<group>"; };
+		843F60B6299A85AD0079886F /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		843F60B8299A86720079886F /* ChatListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListView.swift; sourceTree = "<group>"; };
+		843F60BA299A86C40079886F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +67,9 @@
 				843F60AC299A84910079886F /* Persistence.swift */,
 				843F60AE299A84910079886F /* ChatGKD.xcdatamodeld */,
 				843F60A9299A84910079886F /* Preview Content */,
+				843F60B6299A85AD0079886F /* MainView.swift */,
+				843F60B8299A86720079886F /* ChatListView.swift */,
+				843F60BA299A86C40079886F /* SettingsView.swift */,
 			);
 			path = ChatGKD;
 			sourceTree = "<group>";
@@ -143,9 +152,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				843F60BB299A86C40079886F /* SettingsView.swift in Sources */,
 				843F60AD299A84910079886F /* Persistence.swift in Sources */,
 				843F60A6299A84900079886F /* ContentView.swift in Sources */,
 				843F60B0299A84910079886F /* ChatGKD.xcdatamodeld in Sources */,
+				843F60B7299A85AD0079886F /* MainView.swift in Sources */,
+				843F60B9299A86720079886F /* ChatListView.swift in Sources */,
 				843F60A4299A84900079886F /* ChatGKDApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
