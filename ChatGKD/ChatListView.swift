@@ -17,8 +17,15 @@ struct ChatListView: View {
             VStack {
                 ScrollView {
                     ForEach(chats) { chat in
-                        Text("\(chat.isGPT ? "🤖️" : "🧑")：\(chat.message)")
+                        Text("\(chat.isGPT ? "🤖️" : "🧑")：\(chat.isGPT && isLoading ? ChatGPTHelper.MessagePlaceholder : chat.message)")
                             .bold(!chat.isGPT)
+                            .contextMenu {
+                                Button {
+                                    UIPasteboard.general.string = chat.message
+                                } label: {
+                                    Label("复制", systemImage: "doc.on.doc.fill")
+                                }
+                            }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                             .padding(.vertical, 6)
@@ -27,7 +34,7 @@ struct ChatListView: View {
                 .scrollDismissesKeyboard(.interactively)
                 
                 HStack(spacing: 4) {
-                    TextField(isLoading ? "Loading..." : "Say Hi to ChatGPT", text: $currrentMessage)
+                    TextField(isLoading ? ChatGPTHelper.MessagePlaceholder : "Say Hi to ChatGPT", text: $currrentMessage)
                         .padding(.leading, 12)
                         .disabled(isLoading)
                     
@@ -43,12 +50,20 @@ struct ChatListView: View {
                             Task {
                                 do {
                                     let stream = try await ChatGPTHelper.api.sendMessageStream(text: chats.last?.message ?? "")
-                                    for try await line in stream {
+                                    for try await var line in stream {
+                                        if line.isEmpty || line == " " {
+                                            continue
+                                        }
+                                        
                                         if chats.last!.isGPT {
                                             chats.last!.message.append(line)
                                         } else {
+                                            if line.starts(with: " ") {
+                                                line.removeFirst()
+                                            }
                                             chats.append(ChatModel(isGPT: true, message: line))
                                         }
+                                        print(line)
                                     }
                                     isLoading = false
                                 } catch {
@@ -70,7 +85,7 @@ struct ChatListView: View {
                                     .font(.system(size: 16, weight: .bold))
                                     .frame(width: 26, height: 26)
                                     .foregroundColor(.white)
-                                    .background(Color.accentColor)
+                                    .background(Color.blue)
                                     .cornerRadius(13)
                             }
                         }
