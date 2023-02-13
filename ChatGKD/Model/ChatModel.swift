@@ -19,3 +19,9 @@ class ChatModel: Identifiable {
         self.message = message
     }
 }
+
+extension ChatEntity {
+    var toModel: ChatModel {
+        ChatModel(id: id ?? UUID(), isGPT: isAI, message: message ?? "")
+    }
+}

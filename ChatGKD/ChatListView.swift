@@ -12,6 +12,8 @@ struct ChatListView: View {
     @State var isLoading = false
     @State var chats: [ChatModel] = []
     
+    @State var showingHistory = false
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -45,6 +47,8 @@ struct ChatListView: View {
                             isLoading = true
                             
                             chats.append(ChatModel(isGPT: false, message: currrentMessage))
+                            ChatProvider.shared.saveOrUpdate(chats.last!)
+                            
                             currrentMessage = ""
                             
                             Task {
@@ -63,9 +67,11 @@ struct ChatListView: View {
                                             }
                                             chats.append(ChatModel(isGPT: true, message: line))
                                         }
-                                        print(line)
+//                                        print(line)
                                     }
                                     isLoading = false
+                                    
+                                    ChatProvider.shared.saveOrUpdate(chats.last!)
                                 } catch {
                                     chats.append(ChatModel(isGPT: true, message: error.localizedDescription))
                                 }
@@ -100,6 +106,26 @@ struct ChatListView: View {
                 )
                 .padding(.horizontal)
                 .padding(.vertical, 6)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            showingHistory = true
+                        } label: {
+                            Image(systemName: "clock")
+                        }
+                    }
+                    
+//                    ToolbarItem(placement: .navigationBarTrailing) {
+//                        Button {
+//
+//                        } label: {
+//                            Image(systemName: "plus.message")
+//                        }
+//                    }
+                }
+                .sheet(isPresented: $showingHistory) {
+                    HistoryChatView()
+                }
             }
             .navigationTitle("ChatGKD")
         }

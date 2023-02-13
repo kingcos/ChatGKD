@@ -20,6 +20,7 @@
 		843F60C6299A8F650079886F /* ChatGPTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 843F60C5299A8F650079886F /* ChatGPTSwift */; };
 		843F60C8299A8FC80079886F /* ChatGPTHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F60C7299A8FC80079886F /* ChatGPTHelper.swift */; };
 		843F60CB299A950B0079886F /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F60CA299A950B0079886F /* ChatModel.swift */; };
+		843F60CD299AA6EC0079886F /* HistoryChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F60CC299AA6EC0079886F /* HistoryChatView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		843F60C2299A8C630079886F /* ChatProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatProvider.swift; sourceTree = "<group>"; };
 		843F60C7299A8FC80079886F /* ChatGPTHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatGPTHelper.swift; sourceTree = "<group>"; };
 		843F60CA299A950B0079886F /* ChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
+		843F60CC299AA6EC0079886F /* HistoryChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				843F60B6299A85AD0079886F /* MainView.swift */,
 				843F60B8299A86720079886F /* ChatListView.swift */,
 				843F60BA299A86C40079886F /* SettingsView.swift */,
+				843F60CC299AA6EC0079886F /* HistoryChatView.swift */,
 			);
 			path = ChatGKD;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				843F60AD299A84910079886F /* Persistence.swift in Sources */,
 				843F60A6299A84900079886F /* ContentView.swift in Sources */,
 				843F60C3299A8C630079886F /* ChatProvider.swift in Sources */,
+				843F60CD299AA6EC0079886F /* HistoryChatView.swift in Sources */,
 				843F60B0299A84910079886F /* ChatGKD.xcdatamodeld in Sources */,
 				843F60CB299A950B0079886F /* ChatModel.swift in Sources */,
 				843F60B7299A85AD0079886F /* MainView.swift in Sources */,
