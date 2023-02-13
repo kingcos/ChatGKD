@@ -48,6 +48,14 @@ struct ChatListView: View {
                             
                             if task == nil || task!.isCancelled {
                                 isLoading = false
+                                
+                                if chats.last!.isGPT {
+                                    chats.last?.message.append("[已终止]")
+                                } else {
+                                    chats.append(ChatModel(isGPT: true, message: "[已终止]"))
+                                }
+                                
+                                ChatProvider.shared.saveOrUpdate(chats.last!)
                             }
                         } else {
                             isLoading = true
@@ -82,7 +90,9 @@ struct ChatListView: View {
                                     
                                     ChatProvider.shared.saveOrUpdate(chats.last!)
                                 } catch {
-                                    chats.append(ChatModel(isGPT: true, message: error.localizedDescription))
+                                    if !chats.last!.isGPT {
+                                        chats.append(ChatModel(isGPT: true, message: error.localizedDescription))
+                                    }
                                 }
                             }
                         }
