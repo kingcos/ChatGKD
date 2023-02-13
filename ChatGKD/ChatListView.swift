@@ -14,12 +14,14 @@ struct ChatListView: View {
     
     @State var showingHistory = false
     
+    @State var task: Task<Void, Never>?
+    
     var body: some View {
         NavigationStack {
             VStack {
                 ScrollView {
                     ForEach(chats) { chat in
-                        Text("\(chat.isGPT ? "🤖️" : "🧑")：\(chat.isGPT && isLoading ? ChatGPTHelper.MessagePlaceholder : chat.message)")
+                        Text("\(chat.isGPT ? "🤖️" : "🧑")：\(chat.isGPT && chat.message.isEmpty ? ChatGPTHelper.MessagePlaceholder : chat.message)")
                             .bold(!chat.isGPT)
                             .contextMenu {
                                 Button {
@@ -42,7 +44,11 @@ struct ChatListView: View {
                     
                     Button {
                         if isLoading {
+                            task?.cancel()
                             
+                            if task == nil || task!.isCancelled {
+                                isLoading = false
+                            }
                         } else {
                             isLoading = true
                             
@@ -51,12 +57,15 @@ struct ChatListView: View {
                             
                             currrentMessage = ""
                             
-                            Task {
+                            task = Task {
                                 do {
                                     let stream = try await ChatGPTHelper.api.sendMessageStream(text: chats.last?.message ?? "")
                                     for try await var line in stream {
                                         if line.isEmpty || line == " " {
                                             continue
+                                        }
+                                        if task == nil || task!.isCancelled {
+                                            break
                                         }
                                         
                                         if chats.last!.isGPT {
@@ -98,7 +107,6 @@ struct ChatListView: View {
                     }
                     .buttonStyle(BorderlessButtonStyle())
                     .padding(4)
-                    .disabled(currrentMessage.isEmpty)
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: 17)
