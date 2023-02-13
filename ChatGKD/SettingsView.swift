@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @AppStorage("NameSwitch") var nameSwitch: Bool = false
+    
     var body: some View {
         NavigationView {
-            VStack {
+            List {
+                Toggle("名称切换", isOn: $nameSwitch)
+                
                 Text("Powered by kingcos with Love.")
             }
             .navigationTitle("设置")

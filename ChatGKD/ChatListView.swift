@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ChatListView: View {
+    @AppStorage("NameSwitch") var nameSwitch: Bool = false
+    
     @State var currrentMessage = ""
     @State var isLoading = false
     @State var chats: [ChatModel] = []
@@ -15,6 +17,11 @@ struct ChatListView: View {
     @State var showingHistory = false
     
     @State var task: Task<Void, Never>?
+    
+    let tapGesture = TapGesture()
+        .onEnded { _ in
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     
     var body: some View {
         NavigationStack {
@@ -145,8 +152,9 @@ struct ChatListView: View {
                     HistoryChatView()
                 }
             }
-            .navigationTitle("ChatGKD")
+            .navigationTitle(nameSwitch ? "ChatGKD" : "ChatGPT")
         }
+        .gesture(tapGesture)
     }
 }
 
