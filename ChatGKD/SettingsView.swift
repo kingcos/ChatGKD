@@ -10,9 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     var body: some View {
         NavigationView {
-            List {
-                
-            }
+            Text("Powered by kingcos with Love.")
             .navigationTitle("设置")
         }
     }
