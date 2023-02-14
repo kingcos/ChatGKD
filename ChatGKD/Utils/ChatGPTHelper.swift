@@ -12,4 +12,6 @@ struct ChatGPTHelper {
     static let api = ChatGPTAPI(apiKey: "YOUR_API_KEY")
     
     static let MessagePlaceholder = "💭 思考中..."
+    static let ChatErrorPrefix    = "[出错咯]"
+    static let ChatStopTips       = "[已终止]"
 }

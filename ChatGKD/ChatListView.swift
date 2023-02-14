@@ -11,7 +11,12 @@ struct ChatListView: View {
     @AppStorage("NameSwitch") var nameSwitch: Bool = false
     
     @State var currrentMessage = ""
-    @State var isLoading = false
+    @State var isLoading = false {
+        didSet {
+            loadingUUID = nil
+        }
+    }
+    @State var loadingUUID: UUID?
     @State var chats: [ChatModel] = []
     
     @State var showingHistory = false
@@ -37,16 +42,19 @@ struct ChatListView: View {
                                     Label("复制", systemImage: "doc.on.doc.fill")
                                 }
                             }
-                            .foregroundColor(chat.message.starts(with: "出错咯") ? .red : .primary)
+                            .foregroundColor(
+                                chat.message.starts(with: ChatGPTHelper.ChatErrorPrefix) ? .red : (loadingUUID == chat.id ? .secondary : .primary)
+                            )
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                             .padding(.vertical, 6)
                     }
                 }
                 .scrollDismissesKeyboard(.interactively)
+                .gesture(tapGesture)
                 
                 HStack(spacing: 4) {
-                    TextField(isLoading ? ChatGPTHelper.MessagePlaceholder : "Say Hi to ChatGPT", text: $currrentMessage)
+                    TextField(isLoading ? ChatGPTHelper.MessagePlaceholder : "请在此输入消息...", text: $currrentMessage)
                         .padding(.leading, 12)
                         .disabled(isLoading)
                     
@@ -58,9 +66,11 @@ struct ChatListView: View {
                                 isLoading = false
                                 
                                 if chats.last!.isGPT {
-                                    chats.last?.message.append("[已终止]")
+                                    var last = chats.last!
+                                    last.message.append(ChatGPTHelper.ChatStopTips)
+                                    chats[chats.count-1] = last
                                 } else {
-                                    chats.append(ChatModel(isGPT: true, message: "[已终止]"))
+                                    chats.append(ChatModel(isGPT: true, message: ChatGPTHelper.ChatStopTips))
                                 }
                                 
                                 ChatProvider.shared.saveOrUpdate(chats.last!)
@@ -76,22 +86,35 @@ struct ChatListView: View {
                             task = Task {
                                 do {
                                     let stream = try await ChatGPTHelper.api.sendMessageStream(text: chats.last?.message ?? "")
+                                    chats.append(ChatModel(isGPT: true, message: ChatGPTHelper.MessagePlaceholder))
+                                    loadingUUID = chats.last?.id
+                                    
+                                    var last = chats.last!
+                                    
                                     for try await var line in stream {
+                                        // 跳过空行
                                         if line.isEmpty || line == " " {
                                             continue
                                         }
+                                        
+                                        // 终止的任务
                                         if task == nil || task!.isCancelled {
                                             break
                                         }
                                         
-                                        if chats.last!.isGPT {
-                                            chats.last!.message.append(line)
-                                        } else {
+                                        // 去除占位
+                                        if last.message == ChatGPTHelper.MessagePlaceholder {
+                                            last.message = ""
+                                            
+                                            // 处理空格，仅第一行
                                             if line.starts(with: " ") {
                                                 line.removeFirst()
                                             }
-                                            chats.append(ChatModel(isGPT: true, message: line))
                                         }
+                                        
+                                        last.message.append(line)
+                                        chats[chats.count-1] = last
+                                        
 //                                        print(line)
                                     }
                                     isLoading = false
@@ -99,7 +122,7 @@ struct ChatListView: View {
                                     ChatProvider.shared.saveOrUpdate(chats.last!)
                                 } catch {
                                     if !chats.last!.isGPT {
-                                        chats.append(ChatModel(isGPT: true, message: "出错咯：\(error.localizedDescription)"))
+                                        chats.append(ChatModel(isGPT: true, message: "\(ChatGPTHelper.ChatErrorPrefix) [\(error.localizedDescription)]"))
                                         isLoading = false
                                     }
                                 }
@@ -156,7 +179,6 @@ struct ChatListView: View {
             }
             .navigationTitle(nameSwitch ? "ChatGKD" : "ChatGPT")
         }
-        .gesture(tapGesture)
     }
 }
 

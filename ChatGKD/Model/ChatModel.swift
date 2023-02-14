@@ -7,17 +7,11 @@
 
 import Foundation
 
-class ChatModel: Identifiable {
+struct ChatModel: Identifiable {
     var id = UUID()
     
     var isGPT: Bool
     var message: String
-    
-    init(id: UUID = UUID(), isGPT: Bool, message: String) {
-        self.id = id
-        self.isGPT = isGPT
-        self.message = message
-    }
 }
 
 extension ChatEntity {
