@@ -26,7 +26,6 @@ struct HistoryChatView: View {
                                     Label("复制", systemImage: "doc.on.doc.fill")
                                 }
                             }
-                            .foregroundColor(chat.message.starts(with: "出错咯") ? .red : .primary)
                     }
                     .onDelete { indexSet in
                         ChatProvider.shared.remove(indexSet)

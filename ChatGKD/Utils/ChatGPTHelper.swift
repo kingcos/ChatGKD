@@ -10,4 +10,6 @@ import ChatGPTSwift
 
 struct ChatGPTHelper {
     static let api = ChatGPTAPI(apiKey: "YOUR_API_KEY")
+    
+    static let MessagePlaceholder = "💭 思考中..."
 }
