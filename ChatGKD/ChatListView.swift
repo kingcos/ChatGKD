@@ -37,6 +37,7 @@ struct ChatListView: View {
                                     Label("复制", systemImage: "doc.on.doc.fill")
                                 }
                             }
+                            .foregroundColor(chat.message.starts(with: "出错咯") ? .red : .primary)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                             .padding(.vertical, 6)
@@ -98,7 +99,8 @@ struct ChatListView: View {
                                     ChatProvider.shared.saveOrUpdate(chats.last!)
                                 } catch {
                                     if !chats.last!.isGPT {
-                                        chats.append(ChatModel(isGPT: true, message: error.localizedDescription))
+                                        chats.append(ChatModel(isGPT: true, message: "出错咯：\(error.localizedDescription)"))
+                                        isLoading = false
                                     }
                                 }
                             }
