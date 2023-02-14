@@ -85,6 +85,7 @@ struct ChatListView: View {
                             
                             task = Task {
                                 do {
+//                                    print(chats.last!.message)
                                     let stream = try await ChatGPTHelper.api.sendMessageStream(text: chats.last?.message ?? "")
                                     chats.append(ChatModel(isGPT: true, message: ChatGPTHelper.MessagePlaceholder))
                                     loadingUUID = chats.last?.id
@@ -165,13 +166,16 @@ struct ChatListView: View {
                         }
                     }
                     
-//                    ToolbarItem(placement: .navigationBarTrailing) {
-//                        Button {
-//
-//                        } label: {
-//                            Image(systemName: "plus.message")
-//                        }
-//                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            ChatGPTHelper.renew()
+                            
+                            chats = []
+                            task?.cancel()
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                    }
                 }
                 .sheet(isPresented: $showingHistory) {
                     HistoryChatView()

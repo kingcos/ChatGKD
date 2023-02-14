@@ -9,7 +9,19 @@ import Foundation
 import ChatGPTSwift
 
 struct ChatGPTHelper {
-    static let api = ChatGPTAPI(apiKey: "YOUR_API_KEY")
+    private static var _api: ChatGPTAPI?
+    
+    static var api: ChatGPTAPI {
+        if _api == nil {
+            renew()
+        }
+        
+        return _api!
+    }
+    
+    static func renew() {
+        _api = ChatGPTAPI(apiKey: "YOUR_API_KEY")
+    }
     
     static let MessagePlaceholder = "💭 思考中..."
     static let ChatErrorPrefix    = "[出错咯]"
