@@ -82,11 +82,11 @@ ChatGPT: Hello! How can I help you today? \n\n\n`;
     return responseText;
   }
 
-//   async sendMessage(text: string): Promise<string> {
-//     const responseText = await this.jsonBody(text, false);
-//     this.appendToHistoryList(text, responseText);
-//     return responseText;
-//   }
+  //   async sendMessage(text: string): Promise<string> {
+  //     const responseText = await this.jsonBody(text, false);
+  //     this.appendToHistoryList(text, responseText);
+  //     return responseText;
+  //   }
 }
 
 export default ChatGPTAPI;

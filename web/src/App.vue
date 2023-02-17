@@ -248,8 +248,6 @@ body {
   left: 0;
   right: 0;
   height: 50px;
-
-
 }
 
 .help {
