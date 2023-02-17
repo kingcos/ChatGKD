@@ -14,7 +14,7 @@ A new app for ChatGPT in SwiftUI & [Vue 3](https://kingcos.me/ChatGKD).
     <td colspan="2"><center>App</center></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/kingcos/ChatGKD/blob/main/resources/web.png?raw=true"></td>
+    <td><img src="https://github.com/kingcos/ChatGKD/blob/main/resources/web.jpeg?raw=true"></td>
     <td><img src="https://github.com/kingcos/ChatGKD/blob/main/resources/main.PNG?raw=true"></td>
     <td><img src="https://github.com/kingcos/ChatGKD/blob/main/resources/history.PNG?raw=true"></td>
   </tr>
