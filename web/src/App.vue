@@ -185,6 +185,7 @@ onUnmounted(() => {
         @keydown.enter="addItem"
       />
       <button v-if="isLoading" class="footer-button" @click="stop">🛑</button>
+      <button v-else class="footer-button" @click="addItem">发送</button>
     </div>
   </div>
 </template>
@@ -303,7 +304,11 @@ input {
   right: 0;
   bottom: 0;
 
-  width: 50px;
+  width: 80px;
   height: 50px;
+
+  font-size: 16px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 </style>
