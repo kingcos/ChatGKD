@@ -8,9 +8,17 @@ A new app for ChatGPT in SwiftUI & [Vue 3](https://kingcos.me/ChatGKD).
 
 ## Preview
 
-<img src="https://github.com/kingcos/ChatGKD/blob/main/resources/web.png?raw=true" width=250px />
-
-<img src="https://github.com/kingcos/ChatGKD/blob/main/resources/main.PNG?raw=true" width=250px /> <img src="https://github.com/kingcos/ChatGKD/blob/main/resources/history.PNG?raw=true" width=250px />
+<table>
+  <tr>
+    <td>Web</td>
+    <td colspan="2"><center>App</center></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/kingcos/ChatGKD/blob/main/resources/web.png?raw=true"></td>
+    <td><img src="https://github.com/kingcos/ChatGKD/blob/main/resources/main.PNG?raw=true"></td>
+    <td><img src="https://github.com/kingcos/ChatGKD/blob/main/resources/history.PNG?raw=true"></td>
+  </tr>
+</table>
 
 ## Usages
 
@@ -22,11 +30,11 @@ Open [kingcos.me/ChatGKD](https://kingcos.me/ChatGKD), then just input your APY 
 key:YOUR_API_KEY
 ```
 
-Then, enjoy.
+And, enjoy.
 
 ### For App
 
-Just replace your API key in `Utils/ChatGPTHelper.swift`:
+Replace your API key in `Utils/ChatGPTHelper.swift`:
 
 ```swift
 _api = ChatGPTAPI(apiKey: "YOUR_API_KEY")
