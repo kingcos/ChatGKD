@@ -18,6 +18,7 @@ export default function useApiKey() {
   watch(
     () => appState.apiKey,
     (apiKey) => {
+      appState.apiKey = apiKey;
       if (apiKey) {
         localStorage.setItem(storageKey, apiKey);
       } else {
@@ -31,5 +32,9 @@ export default function useApiKey() {
     appState.apiKey = apiKey;
   };
 
-  return { apiKey: appState.apiKey, setApiKey };
+  const getApiKey = () => {
+    return appState.apiKey;
+  };
+
+  return { getApiKey, setApiKey };
 }
