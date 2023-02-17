@@ -1,6 +1,6 @@
 # ChatGKD
 
-A new app for ChatGPT in SwiftUI & Vue 3.
+A new app for ChatGPT in SwiftUI & [Vue 3](https://kingcos.me/ChatGKD).
 
 > What is *ChatGKD*?
 >
@@ -8,7 +8,7 @@ A new app for ChatGPT in SwiftUI & Vue 3.
 
 ## Preview
 
-<img src="https://github.com/kingcos/ChatGKD/blob/main/resources/web.PNG?raw=true" width=250px />
+<img src="https://github.com/kingcos/ChatGKD/blob/main/resources/web.png?raw=true" width=250px />
 
 <img src="https://github.com/kingcos/ChatGKD/blob/main/resources/main.PNG?raw=true" width=250px /> <img src="https://github.com/kingcos/ChatGKD/blob/main/resources/history.PNG?raw=true" width=250px />
 
