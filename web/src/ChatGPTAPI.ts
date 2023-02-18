@@ -1,6 +1,7 @@
 class ChatGPTAPI {
   private apiKey: string;
   private historyList: string[] = [];
+  private controller: AbortController;
   private get urlRequest() {
     const url = "https://api.openai.com/v1/completions";
     return new Request(url);
@@ -19,6 +20,7 @@ ChatGPT: Hello! How can I help you today? \n\n\n`;
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
+    this.controller = new AbortController();
   }
 
   private generateChatGPTPrompt(text: string): string {
@@ -32,7 +34,11 @@ ChatGPT: Hello! How can I help you today? \n\n\n`;
     return prompt;
   }
 
-  private async jsonBody(text: string, stream = true): Promise<string> {
+  private async jsonBody(
+    text: string,
+    stream = true,
+    signal?: AbortSignal
+  ): Promise<string> {
     const body = {
       model: "text-davinci-003",
       temperature: 0.5,
@@ -48,6 +54,7 @@ ChatGPT: Hello! How can I help you today? \n\n\n`;
         Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify(body),
+      signal: signal,
     });
 
     if (response.ok) {
@@ -68,7 +75,7 @@ ChatGPT: Hello! How can I help you today? \n\n\n`;
 
       return responseText;
     } else {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP 异常！${response.status}`);
     }
   }
 
@@ -77,9 +84,18 @@ ChatGPT: Hello! How can I help you today? \n\n\n`;
   }
 
   async sendMessageStream(text: string): Promise<string> {
-    const responseText = await this.jsonBody(text, true);
+    const responseText = await this.jsonBody(
+      text,
+      true,
+      this.controller.signal
+    );
     this.appendToHistoryList(text, responseText);
     return responseText;
+  }
+
+  stop() {
+    this.controller.abort();
+    this.controller = new AbortController();
   }
 
   //   async sendMessage(text: string): Promise<string> {

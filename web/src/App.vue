@@ -9,6 +9,10 @@ interface ChatModel {
 }
 
 const { getApiKey, setApiKey } = useApiKey();
+const ErrorPrefix = "[出错咯]";
+const StopTips = "[已停止]";
+const LoadingTips = "💭 思考中...";
+
 const showHelp = ref(false); // 展示帮助面板
 const officialTips = ref(""); // 展示官方对话
 const items = ref<ChatModel[]>([]);
@@ -76,7 +80,7 @@ function addItem() {
     if (input) {
       isLoading.value = true;
       items.value.push({ isGPT: false, message: input });
-      items.value.push({ isGPT: true, message: "💭 思考中..." });
+      items.value.push({ isGPT: true, message: LoadingTips });
 
       // 请求 ChatGPT
       api.value
@@ -87,9 +91,13 @@ function addItem() {
         })
         .catch((error) => {
           isLoading.value = false;
+          let message = `${ErrorPrefix}${error}`;
+          if (error.message.includes("aborted")) {
+            message = StopTips;
+          }
           items.value[items.value.length - 1] = {
             isGPT: true,
-            message: `[出错咯]${error}`,
+            message: message,
           };
         });
     }
@@ -98,12 +106,27 @@ function addItem() {
 
 function stop() {
   isLoading.value = false;
+  api.value.stop();
+}
+
+function gptTextColor(text: string): string {
+  if (text.startsWith(ErrorPrefix)) {
+    return "red";
+  }
+  if (text.startsWith(StopTips)) {
+    return "orange";
+  }
+  if (text.startsWith(LoadingTips)) {
+    return "grey";
+  }
+
+  return "black";
 }
 
 // 输入框占位符
 const inputPlaceholder = computed(() => {
   if (isLoading.value) {
-    return "💭 思考中...";
+    return LoadingTips;
   } else {
     return "请在此输入消息...";
   }
@@ -170,21 +193,27 @@ onUnmounted(() => {
       <div v-for="(item, index) in items" :key="index" class="item">
         <span v-if="item.isGPT">🤖️：</span>
         <span v-else>🧑：</span>
-        <span v-if="item.isGPT">{{ item.message }}</span>
+        <span
+          v-if="item.isGPT"
+          :style="{ color: gptTextColor(item.message) }"
+          >{{ item.message }}</span
+        >
         <span v-else class="human-text">{{ item.message }}</span>
       </div>
     </div>
 
     <!-- Footer -->
     <div class="footer" :style="{ bottom: inputBottom + 'px' }">
-      <input
-        type="text"
-        v-model="inputText"
-        v-bind:placeholder="inputPlaceholder"
-        v-bind:disabled="isLoading"
-        @keydown.enter="addItem"
-      />
-      <button v-if="isLoading" class="footer-button" @click="stop">🛑</button>
+      <div class="input-wrapper">
+        <input
+          type="text"
+          v-model="inputText"
+          v-bind:placeholder="inputPlaceholder"
+          v-bind:disabled="isLoading"
+          @keydown.enter="addItem"
+        />
+      </div>
+      <button v-if="isLoading" class="footer-button" @click="stop">停止</button>
       <button v-else class="footer-button" @click="addItem">发送</button>
     </div>
   </div>
@@ -249,6 +278,12 @@ body {
   left: 0;
   right: 0;
   height: 50px;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .help {
@@ -287,25 +322,27 @@ body {
   font-weight: 600;
 }
 
-input {
+.input-wrapper {
+  flex: 1;
+  margin-right: 10px;
+  height: 100%;
+}
+
+.input-wrapper input {
   width: 100%;
   height: 100%;
+
+  padding-left: 10px;
+  font-size: 14px;
   border: none;
   outline: none;
-  font-size: 14px;
-  padding: 0 10px;
 
   background-color: #e2e2e2;
 }
 
 .footer-button {
-  position: fixed;
-
-  right: 0;
-  bottom: 0;
-
   width: 80px;
-  height: 50px;
+  height: 100%;
 
   font-size: 16px;
   padding-left: 10px;
