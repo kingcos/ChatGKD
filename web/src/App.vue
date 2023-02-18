@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import useApiKey from "./AppState";
+import { useApiKey, chatHistory } from "./AppState";
 import ChatGPTAPI from "./ChatGPTAPI";
 
 interface ChatModel {
@@ -9,6 +9,8 @@ interface ChatModel {
 }
 
 const { getApiKey, setApiKey } = useApiKey();
+const { getHistory, setHistory } = chatHistory();
+
 const ErrorPrefix = "[出错咯]";
 const StopTips = "[已停止]";
 const LoadingTips = "💭 思考中...";
@@ -20,10 +22,19 @@ const inputText = ref("");
 const isLoading = ref(false);
 const api = ref<ChatGPTAPI>(new ChatGPTAPI(""));
 
-function renew() {
+function renew(clearHistory = false) {
   const apiKey = getApiKey();
   if (apiKey != null && apiKey.length > 0) {
     api.value = new ChatGPTAPI(apiKey);
+  }
+
+  if (clearHistory) {
+    setHistory(""); // 清空历史存储
+  } else {
+    const history = getHistory();
+    if (history) {
+      items.value = JSON.parse(history);
+    }
   }
 }
 
@@ -35,7 +46,7 @@ function toggleHelp() {
 
 function newChat() {
   items.value = [];
-  renew();
+  renew(true);
 }
 
 function addItem() {
@@ -80,6 +91,7 @@ function addItem() {
     if (input) {
       isLoading.value = true;
       items.value.push({ isGPT: false, message: input });
+      setHistory(JSON.stringify(items.value)); // 保存历史
       items.value.push({ isGPT: true, message: LoadingTips });
 
       // 请求 ChatGPT
@@ -88,6 +100,7 @@ function addItem() {
         .then((reply) => {
           isLoading.value = false;
           items.value[items.value.length - 1].message = reply.trim();
+          setHistory(JSON.stringify(items.value));
         })
         .catch((error) => {
           isLoading.value = false;
@@ -181,7 +194,7 @@ onUnmounted(() => {
         >；<br />
         2. ChatGKD for web 仅做接口封装与页面展示，不提供 API Key 且不对 OpenAI
         内容负责，请自行申请使用并对内容负责；<br />
-        3. API Key 将只保存在浏览器本地存储，不会做上传或其他操作；<br />
+        3. API Key、与对话历史将只保存在浏览器本地存储，不会上传或其他任何操作；<br />
         4. 请按照格式「key:YOUR_API_KEY」格式输入，即可更新 API Key；<br />
         5. 请输入「登出」即可清除本地存储的 API Key；<br />
         6. 点击「新对话」将清除本次历史对话，并重新开启上下文对话。<br /><br />

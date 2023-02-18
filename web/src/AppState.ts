@@ -2,14 +2,44 @@ import { reactive, watch } from "vue";
 
 interface AppState {
   apiKey: string | null;
+  history: string | null;
 }
 
 const appState: AppState = reactive({
   apiKey: null,
+  history: null,
 });
 
-export default function useApiKey() {
-  const storageKey = "me.kingcos.chatgpd.apikey";
+export function chatHistory() {
+  const storageKey = "me.kingcos.chatgkd.history";
+
+  appState.history = localStorage.getItem(storageKey);
+
+  watch(
+    () => appState.history,
+    (history) => {
+      appState.history = history;
+      if (history) {
+        localStorage.setItem(storageKey, history);
+      } else {
+        localStorage.removeItem(storageKey);
+      }
+    }
+  );
+
+  const setHistory = (history: string) => {
+    appState.history = history;
+  };
+
+  const getHistory = () => {
+    return appState.history;
+  };
+
+  return { getHistory, setHistory };
+}
+
+export function useApiKey() {
+  const storageKey = "me.kingcos.chatgkd.apikey";
 
   // 尝试从 localStorage 中获取 apiKey
   appState.apiKey = localStorage.getItem(storageKey);
