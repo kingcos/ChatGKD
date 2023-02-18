@@ -18,8 +18,14 @@ class ChatGPTAPI {
 User: Hello
 ChatGPT: Hello! How can I help you today? \n\n\n`;
 
-  constructor(apiKey: string) {
+  constructor(
+    apiKey: string,
+    historyList: { userText: string; responseText: string }[] = []
+  ) {
     this.apiKey = apiKey;
+    for (const { userText, responseText } of historyList) {
+      this.appendToHistoryList(userText, responseText);
+    }
     this.controller = new AbortController();
   }
 

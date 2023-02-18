@@ -23,11 +23,6 @@ const isLoading = ref(false);
 const api = ref<ChatGPTAPI>(new ChatGPTAPI(""));
 
 function renew(clearHistory = false) {
-  const apiKey = getApiKey();
-  if (apiKey != null && apiKey.length > 0) {
-    api.value = new ChatGPTAPI(apiKey);
-  }
-
   if (clearHistory) {
     setHistory(""); // 清空历史存储
   } else {
@@ -35,6 +30,31 @@ function renew(clearHistory = false) {
     if (history) {
       items.value = JSON.parse(history);
     }
+  }
+
+  const apiKey = getApiKey();
+  if (apiKey != null && apiKey.length > 0) {
+    let history = [];
+    let lastChat: { userText: string; responseText: string } | null = {
+      userText: "",
+      responseText: "",
+    };
+    for (const item of items.value) {
+      if (!item.isGPT) {
+        if (lastChat) {
+          // 保存上一段对话
+          history.push(lastChat);
+        }
+        // 开启下一段对话
+        lastChat = { userText: item.message, responseText: "" };
+      } else {
+        lastChat!.responseText = item.message;
+        history.push(lastChat!);
+        lastChat = null;
+      }
+    }
+
+    api.value = new ChatGPTAPI(apiKey, history);
   }
 }
 
@@ -194,7 +214,8 @@ onUnmounted(() => {
         >；<br />
         2. ChatGKD for web 仅做接口封装与页面展示，不提供 API Key 且不对 OpenAI
         内容负责，请自行申请使用并对内容负责；<br />
-        3. API Key、与对话历史将只保存在浏览器本地存储，不会上传或其他任何操作；<br />
+        3. API
+        Key、与对话历史将只保存在浏览器本地存储，不会上传或其他任何操作；<br />
         4. 请按照格式「key:YOUR_API_KEY」格式输入，即可更新 API Key；<br />
         5. 请输入「登出」即可清除本地存储的 API Key；<br />
         6. 点击「新对话」将清除本次历史对话，并重新开启上下文对话。<br /><br />
