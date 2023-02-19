@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useApiKey, chatHistory } from "./AppState";
+import { useApiKey, chatHistory, basePrompt } from "./AppState";
 import ChatGPTAPI from "./ChatGPTAPI";
 
 interface ChatModel {
@@ -10,6 +10,7 @@ interface ChatModel {
 
 const { getApiKey, setApiKey } = useApiKey();
 const { getHistory, setHistory } = chatHistory();
+const { getPrompt, setPrompt } = basePrompt();
 
 const ErrorPrefix = "[出错咯]";
 const StopTips = "[已停止]";
@@ -54,7 +55,7 @@ function renew(clearHistory = false) {
       }
     }
 
-    api.value = new ChatGPTAPI(apiKey, history);
+    api.value = new ChatGPTAPI(apiKey, getPrompt(), history);
   }
 }
 
@@ -73,22 +74,42 @@ function addItem() {
   const input = inputText.value.trim();
   inputText.value = "";
 
+  // key 操作
   if (input.startsWith("key:")) {
-    // 更新 key
     const key = input.replace("key:", "");
 
-    setApiKey(key);
-    renew();
+    if (key == "clear") {
+      officialTips.value = "API Key 已清空。";
 
-    officialTips.value = "API Key 已更新。";
+      // 登出，清空 key
+      setApiKey("");
+    } else {
+      // 更新 key
+      setApiKey(key);
+      renew();
+
+      officialTips.value = "API Key 已更新。";
+    }
     return;
   }
 
-  if (input == "登出") {
-    officialTips.value = "API Key 已清空。";
+  // prompt 操作
+  if (input.startsWith("prompt:")) {
+    const prompt = input.replace("prompt:", "");
 
-    // 登出，清空 key
-    setApiKey("");
+    if (prompt == "clear") {
+      officialTips.value = "Prompt 已重置。";
+
+      // 登出，清空
+      setPrompt("");
+      renew();
+    } else {
+      // 更新 key
+      setPrompt(prompt);
+      renew();
+
+      officialTips.value = "Prompt 已更新。";
+    }
     return;
   }
 
@@ -195,7 +216,9 @@ onUnmounted(() => {
   <div class="chatgkd">
     <!-- Header -->
     <div class="header">
-      <span class="button" @click="toggleHelp">帮助</span>
+      <span class="button" @click="toggleHelp">{{
+        showHelp ? "关闭帮助" : "帮助"
+      }}</span>
       <div class="title-container">
         <span class="title">ChatGKD</span>
         <a class="subtitle" href="https://github.com/kingcos/ChatGKD"
@@ -216,9 +239,12 @@ onUnmounted(() => {
         内容负责，请自行申请使用并对内容负责；<br />
         3. API
         Key、与对话历史将只保存在浏览器本地存储，不会上传或其他任何操作；<br />
-        4. 请按照格式「key:YOUR_API_KEY」格式输入，即可更新 API Key；<br />
-        5. 请输入「登出」即可清除本地存储的 API Key；<br />
-        6. 点击「新对话」将清除本次历史对话，并重新开启上下文对话。<br /><br />
+        4. 请按照格式「prompt:YOUR_CUSTOM_PROMPT」替换并输入，即可更新
+        Prompt；<br />
+        5. 请按照格式「prompt:clear」输入，即可重置 Prompt；<br />
+        6. 请按照格式「key:YOUR_API_KEY」替换并输入，即可更新 API Key；<br />
+        7. 请按照格式「key:clear」输入，即可清除本地存储的 API Key；<br />
+        8. 点击「新对话」将清除本次历史对话，并重新开启上下文对话。<br /><br />
         关注作者公众号「萌面大道」，更多好玩不迷路～
       </div>
     </div>
