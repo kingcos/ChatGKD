@@ -20,9 +20,13 @@ ChatGPT: Hello! How can I help you today? \n\n\n`;
 
   constructor(
     apiKey: string,
+    basePrompt: string | null = "",
     historyList: { userText: string; responseText: string }[] = []
   ) {
     this.apiKey = apiKey;
+    if (basePrompt) {
+      this.basePrompt = basePrompt;
+    }
     for (const { userText, responseText } of historyList) {
       this.appendToHistoryList(userText, responseText);
     }

@@ -3,12 +3,44 @@ import { reactive, watch } from "vue";
 interface AppState {
   apiKey: string | null;
   history: string | null;
+  prompt: string | null;
 }
 
 const appState: AppState = reactive({
   apiKey: null,
   history: null,
+  prompt: null,
 });
+
+// 重复代码，待优化 TODO
+
+export function basePrompt() {
+  const promptKey = "me.kingcos.chatgkd.prompt";
+
+  appState.prompt = localStorage.getItem(promptKey);
+
+  watch(
+    () => appState.prompt,
+    (prompt) => {
+      appState.prompt = prompt;
+      if (prompt) {
+        localStorage.setItem(promptKey, prompt);
+      } else {
+        localStorage.removeItem(promptKey);
+      }
+    }
+  );
+
+  const setPrompt = (prompt: string) => {
+    appState.prompt = prompt;
+  };
+
+  const getPrompt = () => {
+    return appState.prompt;
+  };
+
+  return { getPrompt, setPrompt };
+}
 
 export function chatHistory() {
   const storageKey = "me.kingcos.chatgkd.history";
