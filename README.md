@@ -20,6 +20,10 @@ A new app for ChatGPT in SwiftUI & [Vue 3](https://kingcos.me/ChatGKD).
   </tr>
 </table>
 
+## Features
+
+- [x] Custom prompt (web version)
+
 ## Usages
 
 ### For Web
