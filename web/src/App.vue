@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useApiKey, chatHistory, basePrompt } from "./AppState";
-import ChatGPTAPI from "./ChatGPTAPI";
+import OpenAIChatAPI, { Role } from "./OpenAIChatAPI";
 
 interface ChatModel {
   isGPT: boolean;
@@ -21,7 +21,7 @@ const officialTips = ref(""); // 展示官方对话
 const items = ref<ChatModel[]>([]);
 const inputText = ref("");
 const isLoading = ref(false);
-const api = ref<ChatGPTAPI>(new ChatGPTAPI(""));
+const chatAPI = ref<OpenAIChatAPI>(new OpenAIChatAPI(""));
 
 function renew(clearHistory = false) {
   if (clearHistory) {
@@ -35,27 +35,16 @@ function renew(clearHistory = false) {
 
   const apiKey = getApiKey();
   if (apiKey != null && apiKey.length > 0) {
-    let history = [];
-    let lastChat: { userText: string; responseText: string } | null = {
-      userText: "",
-      responseText: "",
-    };
-    for (const item of items.value) {
-      if (!item.isGPT) {
-        if (lastChat) {
-          // 保存上一段对话
-          history.push(lastChat);
-        }
-        // 开启下一段对话
-        lastChat = { userText: item.message, responseText: "" };
-      } else {
-        lastChat!.responseText = item.message;
-        history.push(lastChat!);
-        lastChat = null;
-      }
-    }
-
-    api.value = new ChatGPTAPI(apiKey, getPrompt(), history);
+    chatAPI.value = new OpenAIChatAPI(
+      apiKey,
+      getPrompt(),
+      items.value.map((e) => {
+        return {
+          role: e.isGPT ? Role.assistant : Role.user,
+          content: e.message,
+        };
+      })
+    );
   }
 }
 
@@ -136,8 +125,8 @@ function addItem() {
       items.value.push({ isGPT: true, message: LoadingTips });
 
       // 请求 ChatGPT
-      api.value
-        .sendMessageStream(input)
+      chatAPI.value
+        .send(input)
         .then((reply) => {
           isLoading.value = false;
           items.value[items.value.length - 1].message = reply.trim();
@@ -160,7 +149,7 @@ function addItem() {
 
 function stop() {
   isLoading.value = false;
-  api.value.stop();
+  chatAPI.value.cancel();
 }
 
 function gptTextColor(text: string): string {
