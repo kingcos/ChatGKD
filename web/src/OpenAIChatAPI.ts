@@ -45,7 +45,7 @@ class OpenAIChatAPI {
     if (prompt) {
       this.appendHistory(prompt, Role.system);
     }
-    this.chatHistory = chatHistory;
+    this.chatHistory = this.chatHistory.concat(chatHistory);
     // if (model) {
     //   this.model = model;
     // }
@@ -61,7 +61,9 @@ class OpenAIChatAPI {
     const responsData: ChatCompletion = response.data;
 
     if (responsData.choices.length) {
-      return responsData.choices[0].message.content;
+      message = responsData.choices[0].message.content;
+      this.appendHistory(message, Role.assistant);
+      return message;
     } else {
       throw new Error(`接口响应异常！${response.data}`);
     }

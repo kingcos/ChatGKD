@@ -26,6 +26,7 @@ A new app for ChatGPT in SwiftUI & [Vue 3](https://kingcos.me/ChatGKD).
 
 - [x] Custom prompt (web version)
 - [x] Support new gpt-3.5-turbo model (web version)
+- [x] Support PWA (web version)
 
 ## Usages
 
