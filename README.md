@@ -2,6 +2,8 @@
 
 A new app for ChatGPT in SwiftUI & [Vue 3](https://kingcos.me/ChatGKD).
 
+现已支持最新 Chat API！赶快体验类似 ChatGPT 一般的能力吧～
+
 > What is *ChatGKD*?
 >
 > GKD stands for Gao（搞）Kuai（快）Dian（点）, which means faster in Chinese.
@@ -23,6 +25,7 @@ A new app for ChatGPT in SwiftUI & [Vue 3](https://kingcos.me/ChatGKD).
 ## Features
 
 - [x] Custom prompt (web version)
+- [x] Support new gpt-3.5-turbo model (web version)
 
 ## Usages
 
